@@ -1,4 +1,12 @@
 pipeline{
+        environment { 
+
+        registry = "bharathi15/https://hub.docker.com/repositories" 
+
+        registryCredential = 'Bharathi_Docker_ID' 
+
+        }
+
     agent any
     stages{
         stage("sc checkout"){
@@ -16,33 +24,37 @@ pipeline{
                 }
             }
         }
-      //  stage("source code analysis"){
-        //    steps{
-          //     script{
-              //       sh """
+        stage("source code analysis"){
+            steps{
+               script{
+                     sh """
                        
-              //    home/cloud_user/sonar/bin/sonar-scanner
-                //     """
+                  home/cloud_user/sonar/bin/sonar-scanner
+                    """
                     
-            //    }
-            //}
-    //    }
+                }
+            }
+       }
         stage("build image"){
             steps{
                 script{
                     
                     
-                    sh " sudo docker build  -t bharathi15/springbootimage:${BUILD_NUMBER}  ."
+                    sh " sudo docker build  -t bharathi15/spring-boot-image:latest  ."
                 }
             }
         }
         stage("push image to docker registry"){
             steps{
                 script{
-                        sh """
-                        sudo docker tag bharathi15/spring-boot-image:${BUILD_NUMBER}  bharathi15/spring-boot-image:${BUILD_NUMBER}
-                        sudo docker login 
+                       
+                        withDockerRegistry(credentialsId: 'Bharathi_Docker_ID', url: 'https://hub.docker.com/u/bharathi15') {
+    
+
+                       sh """ sudo docker tag bharathi15/spring-boot-image:latest  bharathi15/spring-boot-image:${BUILD_NUMBER}
+                      
                         sudo  docker push bharathi15/spring-boot-image:${BUILD_NUMBER} """
+                        }
                }
             }
                
