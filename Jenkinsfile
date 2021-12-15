@@ -29,7 +29,7 @@ pipeline{
                script{
                      sh """
                        
-                  home/cloud_user/sonar/bin/sonar-scanner
+                  /home/cloud_user/sonar/bin/sonar-scanner
                     """
                     
                 }
@@ -48,16 +48,14 @@ pipeline{
             steps{
                 script{
                        
-                        withDockerRegistry(credentialsId: 'Bharathi_Docker_ID', url: 'https://hub.docker.com/u/bharathi15') {
-    
-
-                       sh """ sudo docker tag bharathi15/spring-boot-image:latest  bharathi15/spring-boot-image:${BUILD_NUMBER}
-                      
-                        sudo  docker push bharathi15/spring-boot-image:${BUILD_NUMBER} """
-                        }
-               }
+                       withCredentials([string(credentialsId: 'bharathi15', variable: 'Dockerhubpwd')]) {
+                           sh """ sudo docker login -u bharathi15 -p ${Dockerhubpwd}
+                                  sudo docker tag bharathi15/spring-boot-image:latest bharathi15/spring-boot-image:${BUILD_NUMBER}
+                                  sudo docker push bharathi15/spring-boot-image:${BUILD_NUMBER} """
+            
+                       }
+                }
             }
-               
         }
     }
 }
