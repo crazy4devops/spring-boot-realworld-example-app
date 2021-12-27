@@ -49,14 +49,18 @@ pipeline{
         } 
     }
 
-    stage("Deploy app dev k8s cluster"){
-        steps{
-            script {
-                echo " deploying the application into k8s"
-            }  
-        } 
+    stage('Deploy App') {
+      steps {
+        script {
+          kubernetesDeploy(configs: "deploy/k8s/deploy-db.yml", kubeconfigId: "mykubeconfig")
+          kubernetesDeploy(configs: "deploy/k8s/deploy-app.yml", kubeconfigId: "mykubeconfig")
+          kubernetesDeploy(configs: "deploy/k8s/app-service.yml", kubeconfigId: "mykubeconfig")
+          kubernetesDeploy(configs: "deploy/k8s/db-service.yml", kubeconfigId: "mykubeconfig")
+        }
+      }
     }
     
   }
 
 }
+
