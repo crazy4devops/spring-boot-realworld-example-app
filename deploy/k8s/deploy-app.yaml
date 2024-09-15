@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+    name: spring-boot-Deployment-file
+    labels:
+      name: spring-boot-app-deploy
+      app: spring-boot-Deployment
+spec: 
+  template: 
+      metadata:
+        name: spring-boot-app-pod
+        labels:
+          name: spring-boot-app-pod
+          app: spring-boot-app
+      spec:
+        containers:
+        - name: spring-boot
+          image: bharathi15/spring-boot-image
+          ports:
+          - containerPort: 5432
+  replicas: 1
+  selector:
+    matchLabels:
+        name: spring-boot-app-pod
+        app: spring-boot-app
